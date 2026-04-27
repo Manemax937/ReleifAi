@@ -60,6 +60,7 @@ class AuthController extends ChangeNotifier {
       'name': trimmedName,
       'email': email.trim().toLowerCase(),
       'role': role.storageValue,
+      'approvalStatus': role == UserRole.volunteer ? 'pending' : 'approved',
       'updatedAt': FieldValue.serverTimestamp(),
       'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
@@ -85,12 +86,17 @@ class AuthController extends ChangeNotifier {
                 firebaseUser.displayName ??
                 'Relief User')
             .trim();
+    final approvalStatus =
+        ((data?['approvalStatus'] as String?) ??
+                (resolvedRole == UserRole.volunteer ? 'pending' : 'approved'))
+            .trim();
 
     if (!snapshot.exists) {
       await docRef.set({
         'name': resolvedName,
         'email': resolvedEmail.toLowerCase(),
         'role': resolvedRole.storageValue,
+        'approvalStatus': approvalStatus,
         'updatedAt': FieldValue.serverTimestamp(),
         'createdAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
@@ -99,6 +105,7 @@ class AuthController extends ChangeNotifier {
         'name': resolvedName,
         'email': resolvedEmail.toLowerCase(),
         'role': resolvedRole.storageValue,
+        'approvalStatus': approvalStatus,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     }
@@ -107,6 +114,7 @@ class AuthController extends ChangeNotifier {
       name: resolvedName,
       email: resolvedEmail,
       role: resolvedRole,
+      approvalStatus: approvalStatus,
     );
     _booting = false;
     notifyListeners();
@@ -116,6 +124,10 @@ class AuthController extends ChangeNotifier {
     await _auth.signOut();
     _user = null;
     notifyListeners();
+  }
+
+  Future<void> refreshCurrentUser() async {
+    await _syncAppUser(_auth.currentUser);
   }
 
   @override

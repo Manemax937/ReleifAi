@@ -27,7 +27,9 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow create, read, update: if isSelf(userId);
+      allow create: if isSelf(userId);
+      allow read: if isSelf(userId) || isDashboardOperator();
+      allow update: if isSelf(userId) || isDashboardOperator();
       allow delete: if false;
     }
 
@@ -37,9 +39,14 @@ service cloud.firestore {
       allow read: if isSignedIn()
                   && (
                     resource.data.reporter.uid == request.auth.uid
+                    || (
+                      resource.data.assignedVolunteerIds is list
+                      && request.auth.uid in resource.data.assignedVolunteerIds
+                    )
                     || isDashboardOperator()
                   );
-      allow update, delete: if false;
+      allow update: if isDashboardOperator();
+      allow delete: if false;
     }
 
     // Dashboard auth/profile documents

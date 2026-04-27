@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app.dart';
 import '../models/user_role.dart';
+import '../screens/volunteer/volunteer_approval_pending_screen.dart';
 import '../theme/app_theme.dart';
 import 'auth_flow.dart';
 import 'victim_shell.dart';
@@ -27,6 +28,9 @@ class RootRouter extends StatelessWidget {
       case UserRole.victim:
         return const VictimShell();
       case UserRole.volunteer:
+        if (!user.isApproved) {
+          return const VolunteerApprovalPendingScreen();
+        }
         return const VolunteerShell();
     }
   }

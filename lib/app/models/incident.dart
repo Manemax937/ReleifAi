@@ -13,6 +13,8 @@ class Incident {
     this.reporterEmail,
     this.latitude,
     this.longitude,
+    this.guidance,
+    this.assignedVolunteerIds,
   });
 
   final String id;
@@ -28,4 +30,6 @@ class Incident {
   final String? reporterEmail;
   final double? latitude;
   final double? longitude;
+  final String? guidance;
+  final List<String>? assignedVolunteerIds;
 }

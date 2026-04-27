@@ -21,7 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  UserRole _selectedRole = UserRole.victim;
+  UserRole _selectedRole = UserRole.volunteer;
   bool _loading = false;
 
   @override
