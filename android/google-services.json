@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1046973145003",
+    "project_id": "releifai",
+    "storage_bucket": "releifai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046973145003:android:dfa6ae2b6ac96cdbfbfcee",
+        "android_client_info": {
+          "package_name": "com.example.releifai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8-MVuiR4b7AHtin3vo9G0Z_jbglOCoPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

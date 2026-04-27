@@ -1,0 +1,96 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function dashboardRole() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/dashboard_users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/dashboard_users/$(request.auth.uid)).data.role
+        : null;
+    }
+
+    function isDashboardOperator() {
+      return dashboardRole() == 'admin'
+        || dashboardRole() == 'dispatcher'
+        || dashboardRole() == 'warehouse_manager';
+    }
+
+    function isDashboardAdmin() {
+      return dashboardRole() == 'admin';
+    }
+
+    match /users/{userId} {
+      allow create, read, update: if isSelf(userId);
+      allow delete: if false;
+    }
+
+    match /sos_requests/{incidentId} {
+      allow create: if isSignedIn()
+                    && request.resource.data.reporter.uid == request.auth.uid;
+      allow read: if isSignedIn()
+                  && (
+                    resource.data.reporter.uid == request.auth.uid
+                    || isDashboardOperator()
+                  );
+      allow update, delete: if false;
+    }
+
+    // Dashboard auth/profile documents
+    match /dashboard_users/{uid} {
+      // Registration flow writes this document right after Firebase Auth signup.
+      allow create: if isSelf(uid)
+                    && request.resource.data.uid == request.auth.uid;
+      allow read, update: if isSelf(uid);
+      allow delete: if false;
+    }
+
+    // Dashboard volunteer roster
+    match /dashboard_volunteers/{volunteerId} {
+      allow read: if isSignedIn();
+      allow create, update: if isDashboardOperator();
+      allow delete: if isDashboardAdmin();
+    }
+
+    // Dashboard operations board documents
+    match /dashboard_incidents/{incidentId} {
+      allow read: if isSignedIn();
+      allow create, update: if isDashboardOperator();
+      allow delete: if isDashboardAdmin();
+    }
+
+    match /dashboard_dispatches/{dispatchId} {
+      allow read: if isSignedIn();
+      allow create, update: if isDashboardOperator();
+      allow delete: if isDashboardAdmin();
+    }
+
+    match /dashboard_warehouses/{warehouseId} {
+      allow read: if isSignedIn();
+      allow create, update: if isDashboardOperator();
+      allow delete: if isDashboardAdmin();
+    }
+
+    match /dashboard_inventory_items/{itemId} {
+      allow read: if isSignedIn();
+      allow create, update: if isDashboardOperator();
+      allow delete: if isDashboardAdmin();
+    }
+
+    match /dashboard_inventory_transactions/{transactionId} {
+      allow read: if isSignedIn();
+      allow create, update: if isDashboardOperator();
+      allow delete: if isDashboardAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+	"flutter": {
+		"platforms": {
+			"android": {
+				"default": {
+					"projectId": "releifai",
+					"appId": "1:1046973145003:android:dfa6ae2b6ac96cdbfbfcee",
+					"fileOutput": "android/app/google-services.json"
+				}
+			},
+			"dart": {
+				"lib/firebase_options.dart": {
+					"projectId": "releifai",
+					"configurations": {
+						"android": "1:1046973145003:android:dfa6ae2b6ac96cdbfbfcee",
+						"ios": "1:1046973145003:ios:becb1f174306ccdefbfcee",
+						"macos": "1:1046973145003:ios:becb1f174306ccdefbfcee",
+						"web": "1:1046973145003:web:568a75acc74ccae9fbfcee",
+						"windows": "1:1046973145003:web:dc40dd1d3e085171fbfcee"
+					}
+				}
+			}
+		}
+	},
+	"firestore": {
+		"rules": "firestore.rules"
+	}
+}
